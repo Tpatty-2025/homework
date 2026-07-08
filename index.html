@@ -132,16 +132,20 @@
             <select id="dateSelect" onchange="renderContent()"></select>
         </div>
 
+        <div class="card quote-card">
+            <h2>💡 每週一句</h2>
+            <div class="quote-text" id="quoteDisplay"></div>
+        </div>
+
         <div class="card">
             <h2 id="currentDateTitle">📖 聯絡簿內容</h2>
             <ol class="homework-list" id="homeworkDisplay"></ol>
         </div>
-        
+
         <div class="card notice-card">
             <h2>⚠️ 本週注意事項</h2>
             <ul class="notice-list" id="noticeDisplay"></ul>
         </div>
-        
     </div>
 
     <script>
@@ -152,17 +156,16 @@
         // 1. 修改每週一句
         const weeklyQuote = "態度決定高度，努力造就實力。";
 
-        // 2. 修改聯絡簿歷史紀錄 
+        // 2. 修改本週注意事項 (若有多點，請依照格式新增)
+        const notices = [
+            "天氣變化大，請提醒孩子攜帶薄外套。",
+            "下週三(7/15)將發放學費繳費單，請留意書包。",
+            "請家長協助檢查孩子是否帶齊美勞用具。"
+        ];
+
+        // 3. 修改聯絡簿歷史紀錄 
         // 最上方放最新日期，欄位包含 date(日期) 和 items(抄寫項目陣列)
         const contactBookRecords = [
-            {
-                date: "2026-07-09 (四)",
-                items: [
-                    "國語習作第一課",
-                    "數學練習卷一張",
-                    "學習一個成語",
-                ]
-            },
             {
                 date: "2026-07-08 (三)",
                 items: [
@@ -191,13 +194,6 @@
             }
         ];
 
-        // 3. 修改本週注意事項 (若有多點，請依照格式新增)
-        const notices = [
-            "天氣變化大，請提醒孩子攜帶薄外套。",
-            "下週三(7/15)將發放學費繳費單，請留意書包。",
-            "請家長協助檢查孩子是否帶齊美勞用具。"
-        ];
-
         // ==========================================
         // ⚙️ 以下為程式邏輯，如無特殊需求不需修改
         // ==========================================
@@ -212,7 +208,7 @@
         const dateSelect = document.getElementById('dateSelect');
         contactBookRecords.forEach((record, index) => {
             const option = document.createElement('option');
-            option.value = index; // 使用陣列索引當作 value
+            option.value = index; 
             option.textContent = record.date;
             dateSelect.appendChild(option);
         });
