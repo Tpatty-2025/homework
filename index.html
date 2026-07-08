@@ -6,309 +6,229 @@
     <title>班級電子聯絡簿</title>
     <style>
         :root {
-            --primary-color: #4CAF50;
-            --secondary-color: #f1f8e9;
+            --primary-color: #4a86e8;
+            --bg-color: #f4f7f6;
             --text-color: #333;
-            --border-color: #c5e1a5;
+            --card-bg: #ffffff;
+            --border-radius: 12px;
         }
+
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif, '微軟正黑體';
-            background-color: #f9f9f9;
+            font-family: 'Microsoft JhengHei', 'PingFang TC', sans-serif;
+            background-color: var(--bg-color);
             color: var(--text-color);
             line-height: 1.6;
             margin: 0;
             padding: 20px;
+            display: flex;
+            justify-content: center;
         }
+
         .container {
-            max-width: 800px;
-            margin: 0 auto;
-            display: grid;
-            gap: 20px;
-        }
-        .card {
-            background: #fff;
-            padding: 25px;
-            border-radius: 12px;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
-            border-top: 5px solid var(--primary-color);
-        }
-        /* 後台編輯區預設隱藏 */
-        #adminPanel {
-            display: none; 
-            border-top: 5px solid #FF9800; /* 用橘色區分後台 */
-        }
-        h1, h2, h3 {
-            color: var(--primary-color);
-            margin-top: 0;
-        }
-        .admin-title {
-            color: #FF9800;
-        }
-        .form-group {
-            margin-bottom: 15px;
-        }
-        label {
-            display: block;
-            font-weight: bold;
-            margin-bottom: 5px;
-            color: #555;
-        }
-        input[type="date"],
-        input[type="text"],
-        textarea {
+            max-width: 700px;
             width: 100%;
-            padding: 10px;
-            border: 1px solid #ccc;
-            border-radius: 6px;
-            box-sizing: border-box;
-            font-family: inherit;
         }
-        textarea {
-            resize: vertical;
-            min-height: 100px;
-        }
-        button {
-            background-color: var(--primary-color);
-            color: white;
-            border: none;
-            padding: 12px 24px;
-            font-size: 16px;
-            border-radius: 6px;
-            cursor: pointer;
-            width: 100%;
-            font-weight: bold;
-            transition: background-color 0.3s;
-        }
-        button:hover {
-            background-color: #388E3C;
-        }
-        .btn-admin {
-            background-color: #FF9800;
-        }
-        .btn-admin:hover {
-            background-color: #F57C00;
-        }
-        .history-item {
-            background: var(--secondary-color);
-            border: 1px solid var(--border-color);
-            padding: 15px;
-            margin-bottom: 15px;
-            border-radius: 8px;
-            position: relative;
-        }
-        .history-date {
-            font-size: 1.2em;
-            font-weight: bold;
-            color: #2E7D32;
-            border-bottom: 2px solid var(--border-color);
-            padding-bottom: 5px;
-            margin-bottom: 10px;
-        }
-        .history-section {
-            margin-bottom: 10px;
-        }
-        .history-section span {
-            font-weight: bold;
-            color: #555;
-        }
-        /* 刪除按鈕預設隱藏 */
-        .delete-btn {
-            display: none; 
-            position: absolute;
-            top: 15px;
-            right: 15px;
-            background-color: #ff5252;
-            padding: 5px 10px;
-            width: auto;
-            font-size: 14px;
-        }
-        .delete-btn:hover {
-            background-color: #d32f2f;
-        }
-        .empty-message {
+
+        .header {
             text-align: center;
-            color: #888;
-            font-style: italic;
+            margin-bottom: 20px;
         }
-        .footer-controls {
-            text-align: right;
-            margin-top: 20px;
+
+        .header h1 {
+            color: var(--primary-color);
+            margin-bottom: 5px;
         }
-        .login-btn {
-            background: none;
-            color: #bbb;
-            border: none;
-            width: auto;
-            padding: 5px 10px;
-            font-size: 12px;
-            cursor: pointer;
-            font-weight: normal;
+
+        /* 卡片共用樣式 */
+        .card {
+            background-color: var(--card-bg);
+            border-radius: var(--border-radius);
+            padding: 20px 25px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+            border-left: 5px solid var(--primary-color);
         }
-        .login-btn:hover {
-            color: #888;
-            background: none;
+
+        .card h2 {
+            margin-top: 0;
+            font-size: 1.2rem;
+            color: var(--primary-color);
+            border-bottom: 1px dashed #ccc;
+            padding-bottom: 10px;
+        }
+
+        /* 每週一句特別樣式 */
+        .quote-card {
+            border-left-color: #ff9800;
+        }
+        .quote-card h2 { color: #ff9800; }
+        .quote-text {
+            font-size: 1.1rem;
+            font-weight: bold;
+            text-align: center;
+            color: #555;
+        }
+
+        /* 注意事項特別樣式 */
+        .notice-card {
+            border-left-color: #e53935;
+        }
+        .notice-card h2 { color: #e53935; }
+        .notice-list {
+            padding-left: 20px;
+            color: #d32f2f;
+            font-weight: bold;
+        }
+
+        /* 歷史紀錄選擇器 */
+        .history-selector {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background-color: var(--card-bg);
+            padding: 15px 25px;
+            border-radius: var(--border-radius);
+            margin-bottom: 20px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+        }
+
+        .history-selector select {
+            padding: 8px 12px;
+            font-size: 1rem;
+            border-radius: 6px;
+            border: 1px solid #ccc;
+            outline: none;
+        }
+
+        /* 抄寫清單樣式 */
+        .homework-list {
+            list-style-type: decimal;
+            padding-left: 25px;
+            font-size: 1.1rem;
+        }
+        
+        .homework-list li {
+            margin-bottom: 10px;
+        }
+
+        @media (max-width: 500px) {
+            .history-selector {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 10px;
+            }
         }
     </style>
 </head>
 <body>
 
-<div class="container">
-    
-    <div class="card" id="adminPanel">
-        <h1 class="admin-title">✏️發布每日聯絡簿</h1>
-        <div class="form-group">
-            <label for="date">日期：</label>
-            <input type="date" id="date" required>
+    <div class="container">
+        <div class="header">
+            <h1>班級電子聯絡簿</h1>
         </div>
-        <div class="form-group">
-            <label for="quote">每週一句 (Quote of the Week)：</label>
-            <input type="text" id="quote" placeholder="例如：勤能補拙，熟能生巧。">
+
+        <div class="history-selector">
+            <label for="dateSelect"><strong>📅 選擇日期：</strong></label>
+            <select id="dateSelect" onchange="renderContent()"></select>
         </div>
-        <div class="form-group">
-            <label for="homework">聯絡簿抄寫 (作業與事項)：</label>
-            <textarea id="homework" placeholder="1. 國作 P.12-14&#10;2. 數習 P.20&#10;3. 訂簽聽寫本"></textarea>
+
+        <div class="card quote-card">
+            <h2>💡 每週一句</h2>
+            <div class="quote-text" id="quoteDisplay"></div>
         </div>
-        <div class="form-group">
-            <label for="notes">注意事項 (Reminders)：</label>
-            <textarea id="notes" placeholder="例如：明天天氣轉涼，請記得多帶一件外套。"></textarea>
+
+        <div class="card notice-card">
+            <h2>⚠️ 本週注意事項</h2>
+            <ul class="notice-list" id="noticeDisplay"></ul>
         </div>
-        <button class="btn-admin" onclick="saveRecord()">儲存並發布</button>
-        <button class="btn-admin" onclick="logout()" style="margin-top: 10px; background-color: #757575;">登出後台</button>
+
+        <div class="card">
+            <h2 id="currentDateTitle">📖 聯絡簿內容</h2>
+            <ol class="homework-list" id="homeworkDisplay"></ol>
+        </div>
     </div>
 
-    <div class="card">
-        <h2>班級聯絡簿與歷史紀錄</h2>
-        <div id="historyContainer">
-            </div>
-    </div>
+    <script>
+        // ==========================================
+        // ✏️ 請在這裡修改你的資料內容
+        // ==========================================
 
-    <div class="footer-controls">
-        <button class="login-btn" onclick="checkLogin()">老師登入</button>
-    </div>
-</div>
+        // 1. 修改每週一句
+        const weeklyQuote = "態度決定高度，努力造就實力。";
 
-<script>
-    // 密碼設定 (可自行修改)
-    const ADMIN_PASSWORD = 'St113';
-    let isAdmin = false;
+        // 2. 修改本週注意事項 (若有多點，請依照格式新增)
+        const notices = [
+            "天氣變化大，請提醒孩子攜帶薄外套。",
+            "下週三(7/15)將發放學費繳費單，請留意書包。",
+            "請家長協助檢查孩子是否帶齊美勞用具。"
+        ];
 
-    // 網頁載入時，自動設定今天日期並讀取歷史紀錄
-    document.addEventListener('DOMContentLoaded', () => {
-        document.getElementById('date').valueAsDate = new Date();
-        loadHistory();
-    });
+        // 3. 修改聯絡簿歷史紀錄 
+        // 最上方放最新日期，欄位包含 date(日期) 和 items(抄寫項目陣列)
+        const contactBookRecords = [
+            {
+                date: "2026-07-08 (三)",
+                items: [
+                    "國語作業簿 P.12-P.13",
+                    "數學練習作 P.15",
+                    "背誦國語第四課課文",
+                    "發下視力檢查回條（請家長簽名）"
+                ]
+            },
+            {
+                date: "2026-07-07 (二)",
+                items: [
+                    "國語課本 P.20 圈詞一次",
+                    "數學課本 P.25-P.26",
+                    "明日考國語第三課聽寫",
+                    "帶彩色筆、剪刀、膠水"
+                ]
+            },
+            {
+                date: "2026-07-06 (一)",
+                items: [
+                    "完成週末日記",
+                    "訂簽數學考卷",
+                    "帶潔牙用具"
+                ]
+            }
+        ];
 
-    // 老師登入驗證
-    function checkLogin() {
-        if(isAdmin) return; // 已登入則無動作
+        // ==========================================
+        // ⚙️ 以下為程式邏輯，如無特殊需求不需修改
+        // ==========================================
+
+        // 渲染每週一句與注意事項（這些是固定的，與日期無關）
+        document.getElementById('quoteDisplay').textContent = weeklyQuote;
         
-        const password = prompt('請輸入老師密碼以開啟編輯模式：');
-        if (password === ADMIN_PASSWORD) {
-            isAdmin = true;
-            document.getElementById('adminPanel').style.display = 'block';
-            document.querySelector('.login-btn').style.display = 'none';
-            alert('登入成功！已開啟編輯權限。');
-            loadHistory(); // 重新載入以顯示刪除按鈕
-        } else if (password !== null) {
-            alert('密碼錯誤！');
-        }
-    }
+        const noticeHTML = notices.map(notice => `<li>${notice}</li>`).join('');
+        document.getElementById('noticeDisplay').innerHTML = noticeHTML;
 
-    // 老師登出
-    function logout() {
-        isAdmin = false;
-        document.getElementById('adminPanel').style.display = 'none';
-        document.querySelector('.login-btn').style.display = 'inline-block';
-        alert('已登出，恢復純檢視模式。');
-        loadHistory(); // 重新載入以隱藏刪除按鈕
-    }
-
-    // 儲存紀錄的函數
-    function saveRecord() {
-        const date = document.getElementById('date').value;
-        const quote = document.getElementById('quote').value;
-        const homework = document.getElementById('homework').value;
-        const notes = document.getElementById('notes').value;
-
-        if (!date || !homework) {
-            alert('「日期」與「聯絡簿抄寫」為必填項目！');
-            return;
-        }
-
-        const record = {
-            id: Date.now().toString(),
-            date: date,
-            quote: quote,
-            homework: homework,
-            notes: notes
-        };
-
-        let records = JSON.parse(localStorage.getItem('contactBookRecords')) || [];
-        records.unshift(record);
-        localStorage.setItem('contactBookRecords', JSON.stringify(records));
-
-        document.getElementById('quote').value = '';
-        document.getElementById('homework').value = '';
-        document.getElementById('notes').value = '';
-
-        loadHistory();
-        alert('紀錄已成功儲存！');
-    }
-
-    // 讀取並顯示歷史紀錄的函數
-    function loadHistory() {
-        const historyContainer = document.getElementById('historyContainer');
-        const records = JSON.parse(localStorage.getItem('contactBookRecords')) || [];
-
-        historyContainer.innerHTML = ''; 
-
-        if (records.length === 0) {
-            historyContainer.innerHTML = '<p class="empty-message">目前還沒有任何聯絡簿紀錄喔。</p>';
-            return;
-        }
-
-        records.sort((a, b) => new Date(b.date) - new Date(a.date));
-
-        records.forEach(record => {
-            const itemDiv = document.createElement('div');
-            itemDiv.className = 'history-item';
-
-            const formattedHomework = record.homework.replace(/\n/g, '<br>');
-            const formattedNotes = record.notes ? record.notes.replace(/\n/g, '<br>') : '無';
-            const formattedQuote = record.quote ? record.quote : '無';
-
-            // 若為登入狀態，則加入並顯示刪除按鈕 (inline-block)
-            const deleteBtnStyle = isAdmin ? 'display: inline-block;' : 'display: none;';
-
-            itemDiv.innerHTML = `
-                <button class="delete-btn" style="${deleteBtnStyle}" onclick="deleteRecord('${record.id}')">刪除</button>
-                <div class="history-date">${record.date}</div>
-                <div class="history-section">
-                    <span>每週一句：</span> ${formattedQuote}
-                </div>
-                <div class="history-section">
-                    <span>聯絡簿抄寫：</span><br>
-                    ${formattedHomework}
-                </div>
-                <div class="history-section">
-                    <span>注意事項：</span><br>
-                    ${formattedNotes}
-                </div>
-            `;
-            historyContainer.appendChild(itemDiv);
+        // 初始化日期下拉選單
+        const dateSelect = document.getElementById('dateSelect');
+        contactBookRecords.forEach((record, index) => {
+            const option = document.createElement('option');
+            option.value = index; // 使用陣列索引當作 value
+            option.textContent = record.date;
+            dateSelect.appendChild(option);
         });
-    }
 
-    // 刪除單筆紀錄的函數
-    function deleteRecord(id) {
-        if (confirm('確定要刪除這筆聯絡簿紀錄嗎？')) {
-            let records = JSON.parse(localStorage.getItem('contactBookRecords')) || [];
-            records = records.filter(record => record.id !== id);
-            localStorage.setItem('contactBookRecords', JSON.stringify(records));
-            loadHistory();
+        // 根據選單切換顯示對應的聯絡簿內容
+        function renderContent() {
+            const selectedIndex = dateSelect.value;
+            const selectedRecord = contactBookRecords[selectedIndex];
+
+            // 更新標題日期
+            document.getElementById('currentDateTitle').textContent = `📖 聯絡簿內容 - ${selectedRecord.date}`;
+
+            // 更新抄寫清單
+            const homeworkHTML = selectedRecord.items.map(item => `<li>${item}</li>`).join('');
+            document.getElementById('homeworkDisplay').innerHTML = homeworkHTML;
         }
-    }
-</script>
 
+        // 網頁載入時，自動顯示最新（第一筆）的資料
+        renderContent();
+
+    </script>
 </body>
 </html>
