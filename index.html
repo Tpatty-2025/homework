@@ -154,7 +154,7 @@
         // ==========================================
 
         // 1. 修改每週一句
-        const weeklyQuote = "態度決定高度，努力造就實力。";
+        const weeklyQuote = "學習是為了遇見更好的自己。";
 
         // 2. 修改本週注意事項 (若有多點，請依照格式新增)
         const notices = [
@@ -227,7 +227,7 @@
             const selectedRecord = contactBookRecords[selectedIndex];
 
             // 更新標題日期
-            document.getElementById('currentDateTitle').textContent = `📖 聯絡簿內容 - ${selectedRecord.date}`;
+            document.getElementById('currentDateTitle').textContent = `📖 聯絡簿內容  ${selectedRecord.date}`;
 
             // 更新抄寫清單
             const homeworkHTML = selectedRecord.items.map(item => `<li>${item}</li>`).join('');
