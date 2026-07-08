@@ -32,9 +32,17 @@
             box-shadow: 0 4px 6px rgba(0,0,0,0.05);
             border-top: 5px solid var(--primary-color);
         }
+        /* 後台編輯區預設隱藏 */
+        #adminPanel {
+            display: none; 
+            border-top: 5px solid #FF9800; /* 用橘色區分後台 */
+        }
         h1, h2, h3 {
             color: var(--primary-color);
             margin-top: 0;
+        }
+        .admin-title {
+            color: #FF9800;
         }
         .form-group {
             margin-bottom: 15px;
@@ -74,6 +82,12 @@
         button:hover {
             background-color: #388E3C;
         }
+        .btn-admin {
+            background-color: #FF9800;
+        }
+        .btn-admin:hover {
+            background-color: #F57C00;
+        }
         .history-item {
             background: var(--secondary-color);
             border: 1px solid var(--border-color);
@@ -97,7 +111,9 @@
             font-weight: bold;
             color: #555;
         }
+        /* 刪除按鈕預設隱藏 */
         .delete-btn {
+            display: none; 
             position: absolute;
             top: 15px;
             right: 15px;
@@ -114,13 +130,32 @@
             color: #888;
             font-style: italic;
         }
+        .footer-controls {
+            text-align: right;
+            margin-top: 20px;
+        }
+        .login-btn {
+            background: none;
+            color: #bbb;
+            border: none;
+            width: auto;
+            padding: 5px 10px;
+            font-size: 12px;
+            cursor: pointer;
+            font-weight: normal;
+        }
+        .login-btn:hover {
+            color: #888;
+            background: none;
+        }
     </style>
 </head>
 <body>
 
 <div class="container">
-    <div class="card">
-        <h1>發布每日聯絡簿</h1>
+    
+    <div class="card" id="adminPanel">
+        <h1 class="admin-title">✏️發布每日聯絡簿</h1>
         <div class="form-group">
             <label for="date">日期：</label>
             <input type="date" id="date" required>
@@ -137,22 +172,56 @@
             <label for="notes">注意事項 (Reminders)：</label>
             <textarea id="notes" placeholder="例如：明天天氣轉涼，請記得多帶一件外套。"></textarea>
         </div>
-        <button onclick="saveRecord()">儲存並發布</button>
+        <button class="btn-admin" onclick="saveRecord()">儲存並發布</button>
+        <button class="btn-admin" onclick="logout()" style="margin-top: 10px; background-color: #757575;">登出後台</button>
     </div>
 
     <div class="card">
-        <h2>歷史紀錄存取</h2>
+        <h2>班級聯絡簿與歷史紀錄</h2>
         <div id="historyContainer">
             </div>
+    </div>
+
+    <div class="footer-controls">
+        <button class="login-btn" onclick="checkLogin()">老師登入</button>
     </div>
 </div>
 
 <script>
+    // 密碼設定 (可自行修改)
+    const ADMIN_PASSWORD = 'St113';
+    let isAdmin = false;
+
     // 網頁載入時，自動設定今天日期並讀取歷史紀錄
     document.addEventListener('DOMContentLoaded', () => {
         document.getElementById('date').valueAsDate = new Date();
         loadHistory();
     });
+
+    // 老師登入驗證
+    function checkLogin() {
+        if(isAdmin) return; // 已登入則無動作
+        
+        const password = prompt('請輸入老師密碼以開啟編輯模式：');
+        if (password === ADMIN_PASSWORD) {
+            isAdmin = true;
+            document.getElementById('adminPanel').style.display = 'block';
+            document.querySelector('.login-btn').style.display = 'none';
+            alert('登入成功！已開啟編輯權限。');
+            loadHistory(); // 重新載入以顯示刪除按鈕
+        } else if (password !== null) {
+            alert('密碼錯誤！');
+        }
+    }
+
+    // 老師登出
+    function logout() {
+        isAdmin = false;
+        document.getElementById('adminPanel').style.display = 'none';
+        document.querySelector('.login-btn').style.display = 'inline-block';
+        alert('已登出，恢復純檢視模式。');
+        loadHistory(); // 重新載入以隱藏刪除按鈕
+    }
 
     // 儲存紀錄的函數
     function saveRecord() {
@@ -166,30 +235,22 @@
             return;
         }
 
-        // 建立資料物件
         const record = {
-            id: Date.now().toString(), // 用時間戳記當作唯一 ID
+            id: Date.now().toString(),
             date: date,
             quote: quote,
             homework: homework,
             notes: notes
         };
 
-        // 從 LocalStorage 取得現有資料，若無則建立空陣列
         let records = JSON.parse(localStorage.getItem('contactBookRecords')) || [];
-        
-        // 將新紀錄加入陣列開頭 (最新的在最上面)
         records.unshift(record);
-
-        // 存回 LocalStorage
         localStorage.setItem('contactBookRecords', JSON.stringify(records));
 
-        // 清空輸入框 (保留日期)
         document.getElementById('quote').value = '';
         document.getElementById('homework').value = '';
         document.getElementById('notes').value = '';
 
-        // 重新載入歷史紀錄顯示
         loadHistory();
         alert('紀錄已成功儲存！');
     }
@@ -199,28 +260,28 @@
         const historyContainer = document.getElementById('historyContainer');
         const records = JSON.parse(localStorage.getItem('contactBookRecords')) || [];
 
-        historyContainer.innerHTML = ''; // 清空現有內容
+        historyContainer.innerHTML = ''; 
 
         if (records.length === 0) {
             historyContainer.innerHTML = '<p class="empty-message">目前還沒有任何聯絡簿紀錄喔。</p>';
             return;
         }
 
-        // 按照日期遞減排序 (確保最新的日期在最上面)
         records.sort((a, b) => new Date(b.date) - new Date(a.date));
 
-        // 遍歷紀錄並建立 HTML 元素
         records.forEach(record => {
             const itemDiv = document.createElement('div');
             itemDiv.className = 'history-item';
 
-            // 將換行字元替換為 <br> 以在網頁上正常顯示換行
             const formattedHomework = record.homework.replace(/\n/g, '<br>');
             const formattedNotes = record.notes ? record.notes.replace(/\n/g, '<br>') : '無';
             const formattedQuote = record.quote ? record.quote : '無';
 
+            // 若為登入狀態，則加入並顯示刪除按鈕 (inline-block)
+            const deleteBtnStyle = isAdmin ? 'display: inline-block;' : 'display: none;';
+
             itemDiv.innerHTML = `
-                <button class="delete-btn" onclick="deleteRecord('${record.id}')">刪除</button>
+                <button class="delete-btn" style="${deleteBtnStyle}" onclick="deleteRecord('${record.id}')">刪除</button>
                 <div class="history-date">${record.date}</div>
                 <div class="history-section">
                     <span>每週一句：</span> ${formattedQuote}
@@ -242,11 +303,8 @@
     function deleteRecord(id) {
         if (confirm('確定要刪除這筆聯絡簿紀錄嗎？')) {
             let records = JSON.parse(localStorage.getItem('contactBookRecords')) || [];
-            // 過濾掉要刪除的 ID
             records = records.filter(record => record.id !== id);
-            // 更新 LocalStorage
             localStorage.setItem('contactBookRecords', JSON.stringify(records));
-            // 重新載入畫面
             loadHistory();
         }
     }
