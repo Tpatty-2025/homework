@@ -216,61 +216,33 @@
         const noticeHTML = notices.map(notice => `<li>${notice}</li>`).join('');
         document.getElementById('noticeDisplay').innerHTML = noticeHTML;
 
-        // 初始化日期下拉選單並自動選取今天的日期
-const dateSelect = document.getElementById('dateSelect');
+        // 初始化日期下拉選單
+        const dateSelect = document.getElementById('dateSelect');
+        contactBookRecords.forEach((record, index) => {
+            const option = document.createElement('option');
+            option.value = index; 
+            option.textContent = record.date;
+            dateSelect.appendChild(option);
+        });
 
-// 1. 取得今天的 YYYY-MM-DD 格式字串
-const today = new Date();
-const year = today.getFullYear();
-const month = String(today.getMonth() + 1).padStart(2, '0');
-const day = String(today.getDate()).padStart(2, '0');
-const todayStr = `${year}-${month}-${day}`; // 例如: "2026-08-12"
+        // 根據選單切換顯示對應的聯絡簿內容
+        function renderContent() {
+            const selectedIndex = dateSelect.value;
+            const selectedRecord = contactBookRecords[selectedIndex];
 
-let defaultIndex = 0; // 預設索引值（若無匹配則選第一筆）
-let foundExactMatch = false;
+            // 更新標題日期
+            document.getElementById('currentDateTitle').textContent = `📖 聯絡簿內容  ${selectedRecord.date}`;
 
-// 2. 建立下拉選單並尋找最適日期
-contactBookRecords.forEach((record, index) => {
-    const option = document.createElement('option');
-    option.value = index; 
-    option.textContent = record.date;
-    dateSelect.appendChild(option);
+            // 更新抄寫清單
+            const homeworkHTML = selectedRecord.items.map(item => `<li>${item}</li>`).join('');
+            document.getElementById('homeworkDisplay').innerHTML = homeworkHTML;
+        }
 
-    // 擷取 record.date 前面的 YYYY-MM-DD 部分
-    const recordDateStr = record.date.split(' ')[0];
-
-    // 如果精確匹配今天
-    if (recordDateStr === todayStr) {
-        defaultIndex = index;
-        foundExactMatch = true;
-    } 
-    // 如果尚未找到精確匹配，且該日期大於等於今天（適合當天無資料時顯示最接近的未來上課日）
-    else if (!foundExactMatch && recordDateStr >= todayStr) {
-        defaultIndex = index;
-    }
-});
-
-// 3. 將選單設定為自動找到的日期索引
-dateSelect.value = defaultIndex;
-
-// 根據選單切換顯示對應的聯絡簿內容
-function renderContent() {
-    const selectedIndex = dateSelect.value;
-    const selectedRecord = contactBookRecords[selectedIndex];
-
-    if (!selectedRecord) return;
-
-    // 更新標題日期
-    document.getElementById('currentDateTitle').textContent = `📖 聯絡簿內容  ${selectedRecord.date}`;
-
-    // 更新抄寫清單
-    const homeworkHTML = selectedRecord.items.map(item => `<li>${item}</li>`).join('');
-    document.getElementById('homeworkDisplay').innerHTML = homeworkHTML;
-}
-
-// 網頁載入時自動渲染對應內容
-renderContent();
+        // 網頁載入時，自動顯示最新（第一筆）的資料
+        renderContent();
 
     </script>
 </body>
 </html>
+
+請問要如何設定日期自動跳至今天的日期
