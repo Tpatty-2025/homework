@@ -205,32 +205,7 @@
         const noticeHTML = notices.map(notice => `<li>${notice}</li>`).join('');
         document.getElementById('noticeDisplay').innerHTML = noticeHTML;
 
-        <!--// 初始化日期下拉選單
-        const dateSelect = document.getElementById('dateSelect');
-        contactBookRecords.forEach((record, index) => {
-            const option = document.createElement('option');
-            option.value = index; 
-            option.textContent = record.date;
-            dateSelect.appendChild(option);
-        });
         
-
-        // 根據選單切換顯示對應的聯絡簿內容
-        function renderContent() {
-            const selectedIndex = dateSelect.value;
-            const selectedRecord = contactBookRecords[selectedIndex];
-
-            // 更新標題日期
-            document.getElementById('currentDateTitle').textContent = `📖 聯絡簿內容  ${selectedRecord.date}`;
-
-            // 更新抄寫清單
-            const homeworkHTML = selectedRecord.items.map(item => `<li>${item}</li>`).join('');
-            document.getElementById('homeworkDisplay').innerHTML = homeworkHTML;
-        }
-
-        // 網頁載入時，自動顯示最新（第一筆）的資料
-        renderContent();
-        -->
             // 初始化日期下拉選單
         const dateSelect = document.getElementById('dateSelect');
         contactBookRecords.forEach((record, index) => {
