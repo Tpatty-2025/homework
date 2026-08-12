@@ -205,7 +205,7 @@
         const noticeHTML = notices.map(notice => `<li>${notice}</li>`).join('');
         document.getElementById('noticeDisplay').innerHTML = noticeHTML;
 
-        // 初始化日期下拉選單
+        <!--// 初始化日期下拉選單
         const dateSelect = document.getElementById('dateSelect');
         contactBookRecords.forEach((record, index) => {
             const option = document.createElement('option');
@@ -213,6 +213,7 @@
             option.textContent = record.date;
             dateSelect.appendChild(option);
         });
+        
 
         // 根據選單切換顯示對應的聯絡簿內容
         function renderContent() {
@@ -228,6 +229,52 @@
         }
 
         // 網頁載入時，自動顯示最新（第一筆）的資料
+        renderContent();
+        -->
+            // 初始化日期下拉選單
+        const dateSelect = document.getElementById('dateSelect');
+        contactBookRecords.forEach((record, index) => {
+            const option = document.createElement('option');
+            option.value = index; 
+            option.textContent = record.date;
+            dateSelect.appendChild(option);
+        });
+
+        // ==========================================
+        // ⭐️ 新增：自動比對並跳至「今天」的日期
+        // ==========================================
+        // 1. 取得今天的日期並格式化為 YYYY-MM-DD
+        const today = new Date();
+        const yyyy = today.getFullYear();
+        const mm = String(today.getMonth() + 1).padStart(2, '0');
+        const dd = String(today.getDate()).padStart(2, '0');
+        const todayString = `${yyyy}-${mm}-${dd}`; 
+
+        // 2. 在聯絡簿紀錄中尋找是否包含今天的日期
+        const todayIndex = contactBookRecords.findIndex(record => record.date.includes(todayString));
+
+        // 3. 如果有找到今天的紀錄，將下拉選單設定為今天；否則預設顯示第一筆
+        if (todayIndex !== -1) {
+            dateSelect.value = todayIndex;
+        } else {
+            dateSelect.value = 0;
+        }
+        // ==========================================
+
+        // 根據選單切換顯示對應的聯絡簿內容
+        function renderContent() {
+            const selectedIndex = dateSelect.value;
+            const selectedRecord = contactBookRecords[selectedIndex];
+
+            // 更新標題日期
+            document.getElementById('currentDateTitle').textContent = `📖 聯絡簿內容  ${selectedRecord.date}`;
+
+            // 更新抄寫清單
+            const homeworkHTML = selectedRecord.items.map(item => `<li>${item}</li>`).join('');
+            document.getElementById('homeworkDisplay').innerHTML = homeworkHTML;
+        }
+
+        // 網頁載入時，自動顯示資料（會根據上方邏輯決定是今天還是第一筆）
         renderContent();
 
     </script>
