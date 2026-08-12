@@ -1,246 +1,234 @@
 <!DOCTYPE html>
 <html lang="zh-TW">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>鼎金國小班級電子聯絡簿</title>
-    <style>
-        :root {
-            --primary-color: #4a86e8;
-            --bg-color: #f4f7f6;
-            --text-color: #333;
-            --card-bg: #ffffff;
-            --border-radius: 12px;
-        }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>班級電子聯絡簿</title>
+    <style>
+        :root {
+            --primary-color: #4a86e8;
+            --bg-color: #f4f7f6;
+            --text-color: #333;
+            --card-bg: #ffffff;
+            --border-radius: 12px;
+        }
 
-        body {
-            font-family: 'Microsoft JhengHei', 'PingFang TC', sans-serif;
-            background-color: var(--bg-color);
-            color: var(--text-color);
-            line-height: 1.6;
-            margin: 0;
-            padding: 20px;
-            display: flex;
-            justify-content: center;
-        }
+        body {
+            font-family: 'Microsoft JhengHei', 'PingFang TC', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+        }
 
-        .container {
-            max-width: 700px;
-            width: 100%;
-        }
+        .container {
+            max-width: 700px;
+            width: 100%;
+        }
 
-        .header {
-            text-align: center;
-            margin-bottom: 20px;
-        }
+        .header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
 
-        .header h1 {
-            color: var(--primary-color);
-            margin-bottom: 5px;
-        }
+        .header h1 {
+            color: var(--primary-color);
+            margin-bottom: 5px;
+        }
 
-        /* 卡片共用樣式 */
-        .card {
-            background-color: var(--card-bg);
-            border-radius: var(--border-radius);
-            padding: 20px 25px;
-            margin-bottom: 20px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
-            border-left: 5px solid var(--primary-color);
-        }
+        /* 卡片共用樣式 */
+        .card {
+            background-color: var(--card-bg);
+            border-radius: var(--border-radius);
+            padding: 20px 25px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+            border-left: 5px solid var(--primary-color);
+        }
 
-        .card h2 {
-            margin-top: 0;
-            font-size: 1.2rem;
-            color: var(--primary-color);
-            border-bottom: 1px dashed #ccc;
-            padding-bottom: 10px;
-        }
+        .card h2 {
+            margin-top: 0;
+            font-size: 1.2rem;
+            color: var(--primary-color);
+            border-bottom: 1px dashed #ccc;
+            padding-bottom: 10px;
+        }
 
-        /* 每週一句特別樣式 */
-        .quote-card {
-            border-left-color: #ff9800;
-        }
-        .quote-card h2 { color: #ff9800; }
-        .quote-text {
-            font-size: 1.1rem;
-            font-weight: bold;
-            text-align: center;
-            color: #555;
-        }
+        /* 每週一句特別樣式 */
+        .quote-card {
+            border-left-color: #ff9800;
+        }
+        .quote-card h2 { color: #ff9800; }
+        .quote-text {
+            font-size: 1.1rem;
+            font-weight: bold;
+            text-align: center;
+            color: #555;
+        }
 
-        /* 注意事項特別樣式 */
-        .notice-card {
-            border-left-color: #e53935;
-        }
-        .notice-card h2 { color: #e53935; }
-        .notice-list {
-            padding-left: 20px;
-            color: #d32f2f;
-            font-weight: bold;
-        }
+        /* 注意事項特別樣式 */
+        .notice-card {
+            border-left-color: #e53935;
+        }
+        .notice-card h2 { color: #e53935; }
+        .notice-list {
+            padding-left: 20px;
+            color: #d32f2f;
+            font-weight: bold;
+        }
 
-        /* 歷史紀錄選擇器 */
-        .history-selector {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            background-color: var(--card-bg);
-            padding: 15px 25px;
-            border-radius: var(--border-radius);
-            margin-bottom: 20px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
-        }
+        /* 歷史紀錄選擇器 */
+        .history-selector {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background-color: var(--card-bg);
+            padding: 15px 25px;
+            border-radius: var(--border-radius);
+            margin-bottom: 20px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+        }
 
-        .history-selector select {
-            padding: 8px 12px;
-            font-size: 1rem;
-            border-radius: 6px;
-            border: 1px solid #ccc;
-            outline: none;
-        }
+        .history-selector select {
+            padding: 8px 12px;
+            font-size: 1rem;
+            border-radius: 6px;
+            border: 1px solid #ccc;
+            outline: none;
+        }
 
-        /* 抄寫清單樣式 */
-        .homework-list {
-            list-style-type: decimal;
-            padding-left: 25px;
-            font-size: 1.1rem;
-        }
-        
-        .homework-list li {
-            margin-bottom: 10px;
-        }
+        /* 抄寫清單樣式 */
+        .homework-list {
+            list-style-type: decimal;
+            padding-left: 25px;
+            font-size: 1.1rem;
+        }
+        
+        .homework-list li {
+            margin-bottom: 10px;
+        }
 
-        @media (max-width: 500px) {
-            .history-selector {
-                flex-direction: column;
-                align-items: flex-start;
-                gap: 10px;
-            }
-        }
-    </style>
+        @media (max-width: 500px) {
+            .history-selector {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 10px;
+            }
+        }
+    </style>
 </head>
 <body>
 
-    <div class="container">
-        <div class="header">
-            <h1>班級電子聯絡簿</h1>
-        </div>
+    <div class="container">
+        <div class="header">
+            <h1>班級電子聯絡簿</h1>
+        </div>
 
-        <div class="history-selector">
-            <label for="dateSelect"><strong>📅 選擇日期：</strong></label>
-            <select id="dateSelect" onchange="renderContent()"></select>
-        </div>
+        <div class="history-selector">
+            <label for="dateSelect"><strong>📅 選擇日期：</strong></label>
+            <select id="dateSelect" onchange="renderContent()"></select>
+        </div>
 
-        <div class="card quote-card">
-            <h2>💡 每週一句</h2>
-            <div class="quote-text" id="quoteDisplay"></div>
-        </div>
+        <div class="card quote-card">
+            <h2>💡 每週一句</h2>
+            <div class="quote-text" id="quoteDisplay"></div>
+        </div>
 
-        <div class="card">
-            <h2 id="currentDateTitle">📖 聯絡簿內容</h2>
-            <ol class="homework-list" id="homeworkDisplay"></ol>
-        </div>
+        <div class="card">
+            <h2 id="currentDateTitle">📖 聯絡簿內容</h2>
+            <ol class="homework-list" id="homeworkDisplay"></ol>
+        </div>
 
-        <div class="card notice-card">
-            <h2>⚠️ 本週注意事項</h2>
-            <ul class="notice-list" id="noticeDisplay"></ul>
-        </div>
-    </div>
+        <div class="card notice-card">
+            <h2>⚠️ 本週注意事項</h2>
+            <ul class="notice-list" id="noticeDisplay"></ul>
+        </div>
+    </div>
 
-    <script>
-        // ==========================================
-        // ✏️ 請在這裡修改你的資料內容
-        // ==========================================
+    <script>
+        // ==========================================
+        // ✏️ 請在這裡修改你的資料內容
+        // ==========================================
 
-        // 1. 修改每週一句
-        const weeklyQuote = "看見自己的優點，精進自己的專長。";
-            
-            //備用句子：1.學習是為了遇見更好的自己。
-            
-            
+        // 1. 修改每週一句
+        const weeklyQuote = "態度決定高度，努力造就實力。";
 
-        // 2. 修改本週注意事項 (若有多點，請依照格式新增)
-        const notices = [
-            "開學第一週",
-           
-        ];
+        // 2. 修改本週注意事項 (若有多點，請依照格式新增)
+        const notices = [
+            "天氣變化大，請提醒孩子攜帶薄外套。",
+            "下週三(7/15)將發放學費繳費單，請留意書包。",
+            "請家長協助檢查孩子是否帶齊美勞用具。"
+        ];
 
-        // 3. 修改聯絡簿歷史紀錄 
-        // 最上方放最新日期，欄位包含 date(日期) 和 items(抄寫項目陣列)
-        const contactBookRecords = [
-            {
-                date: "2026-08-10 (一)",
-                items: [
-                    "",
-                  
-                ]
-            },
-            {
-                date: "2026-08-11 (二)",
-                items: [
-                    "",
-                  
-                ]
-            },
-             {
-                date: "2026-08-12 (三)",
-                items: [
-                    "",
-                  
-                ]
-            },
-            {
-                date: "2026-08-13 (四)",
-                items: [
-                    "",
-                  
-                ]
-            },
-            {
-                date: "2026-08-14 (五)",
-                items: [
-                    "",
-                  
-                ]
-            },
-        ];
+        // 3. 修改聯絡簿歷史紀錄 
+        // 最上方放最新日期，欄位包含 date(日期) 和 items(抄寫項目陣列)
+        const contactBookRecords = [
+            {
+                date: "2026-07-08 (三)",
+                items: [
+                    "國語作業簿 P.12-P.13",
+                    "數學練習作 P.15",
+                    "背誦國語第四課課文",
+                    "發下視力檢查回條（請家長簽名）"
+                ]
+            },
+            {
+                date: "2026-07-07 (二)",
+                items: [
+                    "國語課本 P.20 圈詞一次",
+                    "數學課本 P.25-P.26",
+                    "明日考國語第三課聽寫",
+                    "帶彩色筆、剪刀、膠水"
+                ]
+            },
+            {
+                date: "2026-07-06 (一)",
+                items: [
+                    "完成週末日記",
+                    "訂簽數學考卷",
+                    "帶潔牙用具"
+                ]
+            }
+        ];
 
-        // ==========================================
-        // ⚙️ 以下為程式邏輯，如無特殊需求不需修改
-        // ==========================================
+        // ==========================================
+        // ⚙️ 以下為程式邏輯，如無特殊需求不需修改
+        // ==========================================
 
-        // 渲染每週一句與注意事項（這些是固定的，與日期無關）
-        document.getElementById('quoteDisplay').textContent = weeklyQuote;
-        
-        const noticeHTML = notices.map(notice => `<li>${notice}</li>`).join('');
-        document.getElementById('noticeDisplay').innerHTML = noticeHTML;
+        // 渲染每週一句與注意事項（這些是固定的，與日期無關）
+        document.getElementById('quoteDisplay').textContent = weeklyQuote;
+        
+        const noticeHTML = notices.map(notice => `<li>${notice}</li>`).join('');
+        document.getElementById('noticeDisplay').innerHTML = noticeHTML;
 
-        // 初始化日期下拉選單
-        const dateSelect = document.getElementById('dateSelect');
-        contactBookRecords.forEach((record, index) => {
-            const option = document.createElement('option');
-            option.value = index; 
-            option.textContent = record.date;
-            dateSelect.appendChild(option);
-        });
+        // 初始化日期下拉選單
+        const dateSelect = document.getElementById('dateSelect');
+        contactBookRecords.forEach((record, index) => {
+            const option = document.createElement('option');
+            option.value = index; 
+            option.textContent = record.date;
+            dateSelect.appendChild(option);
+        });
 
-        // 根據選單切換顯示對應的聯絡簿內容
-        function renderContent() {
-            const selectedIndex = dateSelect.value;
-            const selectedRecord = contactBookRecords[selectedIndex];
+        // 根據選單切換顯示對應的聯絡簿內容
+        function renderContent() {
+            const selectedIndex = dateSelect.value;
+            const selectedRecord = contactBookRecords[selectedIndex];
 
-            // 更新標題日期
-            document.getElementById('currentDateTitle').textContent = `📖 聯絡簿內容  ${selectedRecord.date}`;
+            // 更新標題日期
+            document.getElementById('currentDateTitle').textContent = `📖 聯絡簿內容 - ${selectedRecord.date}`;
 
-            // 更新抄寫清單
-            const homeworkHTML = selectedRecord.items.map(item => `<li>${item}</li>`).join('');
-            document.getElementById('homeworkDisplay').innerHTML = homeworkHTML;
-        }
+            // 更新抄寫清單
+            const homeworkHTML = selectedRecord.items.map(item => `<li>${item}</li>`).join('');
+            document.getElementById('homeworkDisplay').innerHTML = homeworkHTML;
+        }
 
-        // 網頁載入時，自動顯示最新（第一筆）的資料
-        renderContent();
+        // 網頁載入時，自動顯示最新（第一筆）的資料
+        renderContent();
 
-    </script>
+    </script>
 </body>
 </html>
