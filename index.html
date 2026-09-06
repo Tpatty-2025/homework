@@ -276,52 +276,84 @@
         document.getElementById('noticeDisplay').innerHTML = noticeHTML;
 
         
-            // 初始化日期下拉選單
-        const dateSelect = document.getElementById('dateSelect');
-        contactBookRecords.forEach((record, index) => {
-            const option = document.createElement('option');
-            option.value = index; 
-            option.textContent = record.date;
-            dateSelect.appendChild(option);
-        });
+           // 初始化日期下拉選單並自動選取最適日期
+const dateSelect = document.getElementById('dateSelect');
 
-        // ==========================================
-        // ⭐️ 新增：自動比對並跳至「今天」的日期
-        // ==========================================
-        // 1. 取得今天的日期並格式化為 YYYY-MM-DD
-        const today = new Date();
-        const yyyy = today.getFullYear();
-        const mm = String(today.getMonth() + 1).padStart(2, '0');
-        const dd = String(today.getDate()).padStart(2, '0');
-        const todayString = `${yyyy}-${mm}-${dd}`; 
+// 1. 計算今天與「當週五」的日期字串 (YYYY-MM-DD)
+const now = new Date();
 
-        // 2. 在聯絡簿紀錄中尋找是否包含今天的日期
-        const todayIndex = contactBookRecords.findIndex(record => record.date.includes(todayString));
+// 取得今天 YYYY-MM-DD
+const formatDate = (dateObj) => {
+    const y = dateObj.getFullYear();
+    const m = String(dateObj.getMonth() + 1).padStart(2, '0');
+    const d = String(dateObj.getDate()).padStart(2, '0');
+    return `${y}-${m}-${d}`;
+};
 
-        // 3. 如果有找到今天的紀錄，將下拉選單設定為今天；否則預設顯示第一筆
-        if (todayIndex !== -1) {
-            dateSelect.value = todayIndex;
-        } else {
-            dateSelect.value = 0;
-        }
-        // ==========================================
+const todayStr = formatDate(now);
 
-        // 根據選單切換顯示對應的聯絡簿內容
-        function renderContent() {
-            const selectedIndex = dateSelect.value;
-            const selectedRecord = contactBookRecords[selectedIndex];
+// 計算當週五的日期
+const dayOfWeek = now.getDay(); // 0 是週日, 1-5 是週一至週五, 6 是週六
+const FridayDate = new Date(now);
 
-            // 更新標題日期
-            document.getElementById('currentDateTitle').textContent = `📖 聯絡簿內容  ${selectedRecord.date}`;
+if (dayOfWeek === 6) { 
+    // 今天是週六 (如 9/5) -> 減 1 天得到週五 (9/4)
+    FridayDate.setDate(now.getDate() - 1);
+} else if (dayOfWeek === 0) { 
+    // 今天是週日 (如 9/6) -> 減 2 天得到週五 (9/4)
+    FridayDate.setDate(now.getDate() - 2);
+}
+const FridayStr = formatDate(FridayDate);
 
-            // 更新抄寫清單
-            const homeworkHTML = selectedRecord.items.map(item => `<li>${item}</li>`).join('');
-            document.getElementById('homeworkDisplay').innerHTML = homeworkHTML;
-        }
+// 2. 比對與選擇適合的歷史紀錄索引
+let defaultIndex = 0;
+let isMatched = false;
 
-        // 網頁載入時，自動顯示資料（會根據上方邏輯決定是今天還是第一筆）
-        renderContent();
+contactBookRecords.forEach((record, index) => {
+    const option = document.createElement('option');
+    option.value = index; 
+    option.textContent = record.date;
+    dateSelect.appendChild(option);
 
+    const recordDateStr = record.date.split(' ')[0]; // 擷取 "YYYY-MM-DD"
+
+    // 判斷優先順序：
+    // ① 若週末(六/日)，優先精確匹配「當週五」的日期
+    if ((dayOfWeek === 0 || dayOfWeek === 6) && recordDateStr === FridayStr) {
+        defaultIndex = index;
+        isMatched = true;
+    }
+    // ② 若平日(一~五)，精確匹配「今天」
+    else if (!isMatched && recordDateStr === todayStr) {
+        defaultIndex = index;
+        isMatched = true;
+    }
+    // ③ 備用：若尚未找到，且紀錄日期比今天新（如暑假開學前），暫存最接近的未來日期
+    else if (!isMatched && recordDateStr >= todayStr) {
+        defaultIndex = index;
+    }
+});
+
+// 3. 設定下拉選單預設值
+dateSelect.value = defaultIndex;
+
+// 根據選單切換顯示對應的聯絡簿內容
+function renderContent() {
+    const selectedIndex = dateSelect.value;
+    const selectedRecord = contactBookRecords[selectedIndex];
+
+    if (!selectedRecord) return;
+
+    // 更新標題日期
+    document.getElementById('currentDateTitle').textContent = `📖 聯絡簿內容  ${selectedRecord.date}`;
+
+    // 更新抄寫清單
+    const homeworkHTML = selectedRecord.items.map(item => `<li>${item}</li>`).join('');
+    document.getElementById('homeworkDisplay').innerHTML = homeworkHTML;
+}
+
+// 網頁載入時自動顯示
+renderContent();
     </script>
 </body>
 </html>
