@@ -460,32 +460,42 @@ const FridayStr = formatDate(FridayDate);
 // 2. 比對與選擇適合的歷史紀錄索引
 let defaultIndex = 0;
 let isMatched = false;
+let closestFutureIndex = -1;
 
 contactBookRecords.forEach((record, index) => {
     const option = document.createElement('option');
-    option.value = index; 
+    option.value = index;
     option.textContent = record.date;
     dateSelect.appendChild(option);
 
-    const recordDateStr = record.date.split(' ')[0]; // 擷取 "YYYY-MM-DD"
+    const recordDateStr = record.date.split(' ')[0];
 
-    // 判斷優先順序：
-    // ① 若週末(六/日)，優先精確匹配「當週五」的日期
+    // ① 週末：優先顯示當週五
     if ((dayOfWeek === 0 || dayOfWeek === 6) && recordDateStr === FridayStr) {
         defaultIndex = index;
         isMatched = true;
     }
-    // ② 若平日(一~五)，精確匹配「今天」
+
+    // ② 平日：優先顯示今天
     else if (!isMatched && recordDateStr === todayStr) {
         defaultIndex = index;
         isMatched = true;
     }
-    // ③ 備用：若尚未找到，且紀錄日期比今天新（如暑假開學前），暫存最接近的未來日期
-    else if (!isMatched && recordDateStr >= todayStr) {
-        defaultIndex = index;
+
+    // ③ 如果沒有今天的資料，找「最近的未來日期」
+    else if (!isMatched && recordDateStr > todayStr && closestFutureIndex === -1) {
+        closestFutureIndex = index;
     }
 });
 
+// 如果沒有今天的資料，就選最近的未來日期
+if (!isMatched && closestFutureIndex !== -1) {
+    defaultIndex = closestFutureIndex;
+}
+
+dateSelect.value = defaultIndex;
+
+        
 // 3. 設定下拉選單預設值
 dateSelect.value = defaultIndex;
 
